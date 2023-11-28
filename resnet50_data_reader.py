@@ -28,9 +28,6 @@ def _preprocess_images(images_folder: str, height: int, width: int, size_limit=0
             continue
         pillow_img = Image.new("RGB", (width, height))
         pillow_img.paste(Image.open(image_filepath).resize((width, height)))
-        # input_data = numpy.float32(pillow_img) - numpy.array(
-        #     [123.68, 116.78, 103.94], dtype=numpy.float32
-        # )
         input_data = ((numpy.float32(pillow_img) / 255.0 - [0.485, 0.456, 0.406]) /
                       [0.229, 0.224, 0.225]).astype(numpy.float32)        
         nhwc_data = numpy.expand_dims(input_data, axis=0)
