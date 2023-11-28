@@ -32,12 +32,12 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('model_path', type=str)
     parser.add_argument('dataset_path', type=str, default='/home/akash/intel/datasets/imagenet/val')
-    parser.add_argument('ovep', type=bool, default=True)
+    parser.add_argument('--ovep', action='store_true')
     args = parser.parse_args()
     dataset_path = args.dataset_path 
     model_path = args.model_path
     is_ovep = args.ovep
-    
+
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     val_dataset = datasets.ImageFolder(
         root=dataset_path,

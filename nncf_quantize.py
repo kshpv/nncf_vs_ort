@@ -10,7 +10,6 @@
 # limitations under the License.
 
 from argparse import ArgumentParser
-from pathlib import Path
 
 import onnx
 from resnet50_data_reader import ResNet50DataReader
