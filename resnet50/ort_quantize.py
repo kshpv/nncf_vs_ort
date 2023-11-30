@@ -20,12 +20,13 @@ if __name__ == "__main__":
     
     model = onnx.load(model_path)
     input_shape = get_edge_shape(model.graph.input[0])
-    dataset = ResNet50DataReader(dataset_path, input_shape, model.graph.input[0])
-    dr = ResNet50DataReader(dataset_path, input_shape, model.graph.input[0])
+    dataset = ResNet50DataReader(dataset_path, input_shape, model.graph.input[0].name)
+    per_channel = False if model.opset_import[0].version < 13 else True
     quantize_static(
         model_path,
         int8_model_path,
-        dr,
-        quant_format=QuantFormat.QDQ
+        dataset,
+        quant_format=QuantFormat.QDQ,
+        per_channel=per_channel
     )
     print("Calibrated and quantized model saved.")

@@ -20,8 +20,7 @@ if __name__ == '__main__':
     
     model = onnx.load(model_path)
     input_shape = get_edge_shape(model.graph.input[0])
-    dataset = ResNet50DataReader(dataset_path, input_shape, model.graph.input[0])
-    calibration_dataset = nncf.Dataset(dataset)
+    calibration_dataset = nncf.Dataset(ResNet50DataReader(dataset_path, input_shape, model.graph.input[0].name))
     onnx_quantized_model = nncf.quantize(model, calibration_dataset)
 
     onnx.save(onnx_quantized_model, int8_model_path)

@@ -3,8 +3,6 @@ from pathlib import Path
 from typing import Dict, List
 
 import numpy as np
-import onnxruntime
-import openvino as ov
 import torch
 from sklearn.metrics import accuracy_score
 from torchvision import datasets
@@ -31,11 +29,11 @@ def validate(path_to_model: str, data_loader: torch.utils.data.DataLoader,
     return accuracy_score(predictions, references)
 
 
-def validate_ov_model(model: ov.Model, val_loader: torch.utils.data.DataLoader) -> float:
+def validate_ov_model(path_to_model: str, val_loader: torch.utils.data.DataLoader) -> float:
     predictions = []
     references = []
 
-    compiled_model = ov.compile_model(model)
+    compiled_model = ov.compile_model(path_to_model)
     output = compiled_model.outputs[0]
 
     for images, target in tqdm(val_loader):
@@ -78,9 +76,11 @@ if __name__ == '__main__':
     
     if is_openvino_model(model_path):
         print ('The OpenVINO IR model is provided. The model will be validated through OpenVINO.')
+        import openvino as ov  # If import together with onnxruntime cause error - 
         top1 = validate_ov_model(model_path, val_loader)
     else:
         print ('The ONNX model is provided. The model will be validated through ONNXRuntime.')
+        import onnxruntime
         providers = ['CPUExecutionProvider']
         if is_ovep:
             providers = ['OpenVINOExecutionProvider']
@@ -89,4 +89,4 @@ if __name__ == '__main__':
                         providers = providers,
                         provider_options = [{'device_type' : 'CPU_FP32'}])
 
-    print(f"Accuracy @ top1: {top1:.3f}")
+    print(f"Accuracy @ top1: {top1:.6f}")
