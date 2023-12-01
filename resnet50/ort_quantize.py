@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 import onnx
 from onnxruntime.quantization import QuantFormat
+from onnxruntime.quantization import QuantType
 from onnxruntime.quantization import quantize_static
 from resnet50_data_reader import ResNet50DataReader
 
@@ -27,6 +28,7 @@ if __name__ == "__main__":
         int8_model_path,
         dataset,
         quant_format=QuantFormat.QDQ,
+        weight_type=QuantType.QInt8,
         per_channel=per_channel
     )
     print("Calibrated and quantized model saved.")
