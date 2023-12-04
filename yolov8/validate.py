@@ -136,7 +136,7 @@ if __name__ == '__main__':
     det_validator.metrics.names = det_validator.names
     det_validator.nc = det_model.model.model[-1].nc
 
-    NUM_TEST_SAMPLES = 300
+    NUM_TEST_SAMPLES = None
 
     if is_ov:
         import openvino as ov

@@ -18,7 +18,7 @@ def benchmark(model_path, input_shape, providers=None):
     input_name = session.get_inputs()[0].name
 
     total = 0.0
-    runs = 1000
+    runs = 10000
     input_data = gen_data(input_shape, runs)
     
     # Warming up
@@ -41,7 +41,7 @@ def becnhmark_ov(model_path):
     import openvino as ov
     compiled_model = ov.compile_model(model_path)
     input_shape = [1, 3 , 224, 224]
-    runs = 100
+    runs = 10000
 
     input_data = gen_data(input_shape, runs)
     total = 0.0

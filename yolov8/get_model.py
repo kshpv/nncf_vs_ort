@@ -26,3 +26,4 @@ Image.fromarray(res[0].plot()[:, :, ::-1])
 
 # object detection model
 det_model.export(format="openvino", dynamic=True, half=False)
+det_model.export(format="onnx", dynamic=True, half=False)
