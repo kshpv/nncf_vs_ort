@@ -7,6 +7,8 @@
 # Run quantization
 
 For quantization the 300 samples from MSCOCO is used.
+1) ```python download_dataset.py```
+2) ```python get_model.py```
 
 ## ONNX model
 
