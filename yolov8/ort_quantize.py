@@ -4,6 +4,7 @@ import onnx
 import onnxruntime as rt
 from onnxruntime.quantization import CalibrationDataReader
 from onnxruntime.quantization import QuantFormat
+from onnxruntime.quantization import QuantType
 from onnxruntime.quantization import quantize_static
 from ultralytics import YOLO
 from ultralytics.yolo.cfg import get_cfg
@@ -22,7 +23,6 @@ class MyData(CalibrationDataReader):
         
     
     def get_next(self) -> dict:
-        print (self.i)
         if self.i == 300:
             return None
         input_tensor = det_validator.preprocess(next(self.iter_data_validator, None))['img'].numpy()
@@ -59,9 +59,32 @@ det_data_loader = det_validator.get_dataloader("datasets/coco", 1)
 
 dr = MyData(det_data_loader)
 int8_model_path = models_dir / f"{DET_MODEL_NAME}_int8_ORT.onnx"
+model = onnx.load(det_model_path)
+per_channel = False if model.opset_import[0].version < 13 else True
 quantize_static(
     det_model_path,
     int8_model_path,
     dr,
     quant_format=QuantFormat.QDQ,
+    weight_type=QuantType.QInt8,
+    per_channel=per_channel,
+    nodes_to_exclude=[
+        "/model.22/dfl/conv/Conv",
+        "/model.22/Add",
+        "/model.22/Add_1",
+        "/model.22/Add_2",
+        "/model.22/Add_3",
+        "/model.22/Add_4",
+        "/model.22/Add_5",
+        "/model.22/Add_6",
+        "/model.22/Add_7",
+        "/model.22/Add_8",
+        "/model.22/Add_9",
+        "/model.22/Add_10",
+        "/model.22/Mul_5",
+        "/model.22/Sub_1",
+        "/model.22/Add_10",
+        "/model.22/Sub",
+        "/model.22/Sigmoid"
+    ],
 )
